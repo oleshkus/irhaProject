@@ -55,23 +55,6 @@
                                     @enderror
                                 </div>
 
-                                <!-- Категории -->
-                                <div>
-                                    <x-custom.forms.label for="categories" class="text-gray-700 font-medium">Категории</x-custom.forms.label>
-                                    <select name="categories[]" id="categories" multiple
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500">
-                                        @foreach($categories as $category)
-                                            <option value="{{ $category->id }}" 
-                                                {{ in_array($category->id, old('categories', $attraction->categories->pluck('id')->toArray())) ? 'selected' : '' }}>
-                                                {{ $category->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('categories')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
                                 <!-- Изображения -->
                                 <div>
                                     <x-custom.forms.label class="text-gray-700 font-medium mb-2">Текущие изображения</x-custom.forms.label>

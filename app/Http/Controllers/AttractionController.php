@@ -11,15 +11,11 @@ class AttractionController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Attraction::with('images', 'category');
+        $query = Attraction::with('images');
 
         if ($request->has('search')) {
             $query->where('name', 'like', '%' . $request->search . '%')
                   ->orWhere('description', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->has('category') && $request->category) {
-            $query->where('category_id', $request->category);
         }
 
         $attractions = $query->latest()->paginate(9);
@@ -29,7 +25,6 @@ class AttractionController extends Controller
 
     public function show(Attraction $attraction)
     {
-        $attraction->load('images', 'category');
         return view('attractions.show', compact('attraction'));
     }
 

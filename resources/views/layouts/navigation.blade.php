@@ -24,9 +24,6 @@
                             <x-nav-link :href="route('admin.routes.index')" :active="request()->routeIs('admin.routes.*')">
                                 {{ __('Маршруты') }}
                             </x-nav-link>
-                            <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
-                                {{ __('Категории') }}
-                            </x-nav-link>
                         @endif
                     @endauth
                 </div>

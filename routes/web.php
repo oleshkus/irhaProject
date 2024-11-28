@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\AttractionController;
-use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\Admin\AttractionController as AdminAttractionController;
@@ -47,18 +46,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin/routes')->group(function () 
     Route::get('/{route}/edit', [AdminRouteController::class, 'edit'])->name('admin.routes.edit');
     Route::put('/{route}', [AdminRouteController::class, 'update'])->name('admin.routes.update');
     Route::delete('/{route}', [AdminRouteController::class, 'destroy'])->name('admin.routes.destroy');
-});
-
-// -------------------------
-// Маршруты для категорий
-// -------------------------
-Route::middleware(['auth', 'admin'])->prefix('admin/categories')->group(function () {
-    Route::get('/', [CategoryController::class, 'index'])->name('admin.categories.index');
-    Route::get('/create', [CategoryController::class, 'create'])->name('admin.categories.create');
-    Route::post('/', [CategoryController::class, 'store'])->name('admin.categories.store');
-    Route::get('/{category}/edit', [CategoryController::class, 'edit'])->name('admin.categories.edit');
-    Route::put('/{category}', [CategoryController::class, 'update'])->name('admin.categories.update');
-     Route::delete('/{category}', [CategoryController::class, 'destroy'])->name('admin.categories.destroy');
 });
 
 // -------------------------

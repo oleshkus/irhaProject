@@ -20,13 +20,7 @@ class Attraction extends Model
         'latitude',
         'longitude'
     ];
-
-    public function categories(): BelongsToMany
-    {
-        return $this->belongsToMany(AttractionCategory::class, 'attraction_category')
-                    ->withTimestamps();
-    }
-
+    
     public function images(): HasMany
     {
         return $this->hasMany(Image::class);

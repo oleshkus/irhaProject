@@ -27,7 +27,6 @@ class RouteController extends Controller
 
     public function show(Route $route)
     {
-        $route->load(['attractions.images', 'attractions.category']);
         return view('routes.show', compact('route'));
     }
 

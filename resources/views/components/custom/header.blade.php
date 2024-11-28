@@ -73,10 +73,6 @@
                                            class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.routes.*') ? 'bg-gray-100' : '' }}">
                                             Маршруты
                                         </a>
-                                        <a href="{{ route('admin.categories.index') }}" 
-                                           class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-100' : '' }}">
-                                            Категории
-                                        </a>
                                     </div>
                                 </div>
                             @endif
@@ -188,10 +184,6 @@
                             <a href="{{ route('admin.routes.index') }}" 
                                class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.routes.*') ? 'bg-gray-100' : '' }}">
                                 Маршруты
-                            </a>
-                            <a href="{{ route('admin.categories.index') }}" 
-                               class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 {{ request()->routeIs('admin.categories.*') ? 'bg-gray-100' : '' }}">
-                                Категории
                             </a>
                         </div>
                     </div>

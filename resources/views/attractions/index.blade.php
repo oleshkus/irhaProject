@@ -35,16 +35,14 @@
         <!-- Filters -->
         <div class="bg-white shadow rounded-lg mt-8 p-6">
             <form method="GET" action="{{ route('attractions.index') }}" class="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                <div>
-                    <label for="search" class="block text-sm font-medium text-gray-700">Поиск</label>
-                    <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                </div>
-                <div>
-                    <label for="category" class="block text-sm font-medium text-gray-700">Категория</label>
-                    <select id="category" name="category" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                        <option value="">Все</option>
-                        <!-- Add category options here -->
-                    </select>
+                <div class="flex flex-col space-y-4 sm:flex-row sm:space-y-0 sm:space-x-4">
+                    <div class="flex-1">
+                        <label for="search" class="block text-sm font-medium text-gray-700">Поиск</label>
+                        <input type="text" name="search" id="search"
+                               value="{{ request('search') }}"
+                               class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md"
+                               placeholder="Поиск по названию...">
+                    </div>
                 </div>
                 <div class="flex items-end">
                     <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
