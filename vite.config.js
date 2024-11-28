@@ -8,4 +8,23 @@ export default defineConfig({
             refresh: true,
         }),
     ],
+    build: {
+        // Включаем минификацию CSS
+        cssMinify: true,
+        // Оптимизируем размер бандла
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['alpinejs']
+                }
+            }
+        },
+        // Включаем кэширование
+        cache: true,
+        // Оптимизируем чанки
+        chunkSizeWarningLimit: 1000,
+    },
+    optimizeDeps: {
+        include: ['alpinejs']
+    }
 });

@@ -12,9 +12,23 @@
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('home')" :active="request()->routeIs('home')">
+                        {{ __('Главная') }}
                     </x-nav-link>
+
+                    @auth
+                        @if(Auth::user()->hasRole('admin'))
+                            <x-nav-link :href="route('admin.attractions.index')" :active="request()->routeIs('admin.attractions.*')">
+                                {{ __('Достопримечательности') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.routes.index')" :active="request()->routeIs('admin.routes.*')">
+                                {{ __('Маршруты') }}
+                            </x-nav-link>
+                            <x-nav-link :href="route('admin.categories.index')" :active="request()->routeIs('admin.categories.*')">
+                                {{ __('Категории') }}
+                            </x-nav-link>
+                        @endif
+                    @endauth
                 </div>
             </div>
 
