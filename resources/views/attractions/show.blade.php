@@ -81,9 +81,22 @@
                     <!-- Map -->
                     <div class="mt-8">
                         <h2 class="text-2xl font-bold text-gray-900 mb-4">Расположение</h2>
-                        <div class="h-96 bg-gray-200 rounded-lg">
-                            <!-- Здесь будет карта -->
-                        </div>
+                        <div id="attraction-map" style="height: 400px;"></div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function () {
+                                var map = L.map('attraction-map', {
+                                    center: [{{ $attraction->latitude }}, {{ $attraction->longitude }}],
+                                    zoom: 18,
+                                    maxZoom: 19
+                                });
+
+                                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                                    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                                }).addTo(map);
+
+                                L.marker([{{ $attraction->latitude }}, {{ $attraction->longitude }}]).addTo(map);
+                            });
+                        </script>
                     </div>
                 </div>
             </div>

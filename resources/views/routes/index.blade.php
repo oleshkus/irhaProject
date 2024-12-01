@@ -1,7 +1,7 @@
 <x-custom.header></x-custom.header>
 
 <x-default-layout>
-    <div class="min-h-screen bg-gray-100 py-8">
+    <div class="min-h-screen py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header -->
             <div class="md:flex md:items-center md:justify-between">

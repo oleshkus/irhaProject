@@ -2,11 +2,44 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Base styles */
 * {
     box-sizing: border-box;
     margin: 0;
     padding: 0;
 }
+
+/* FOUC Prevention */
+.page-loader {
+    display: none;
+}
+
+html.loading {
+    overflow: hidden;
+}
+
+html.loading .page-loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #ffffff;
+    z-index: 9999;
+}
+
+html:not(.loading) .page-loader {
+    display: none;
+}
+
+html:not(.loading) main {
+    visibility: visible;
+}
+
+/* Existing styles */
 
 /* resources/css/app.css */
 

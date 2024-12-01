@@ -114,7 +114,7 @@
                             <x-custom.navigation.nav-link href="{{ route('login') }}">
                                 Войти
                             </x-custom.navigation.nav-link>
-                            <x-custom.navigation.nav-link href="{{ route('register') }}" class="bg-blue-500">
+                            <x-custom.navigation.nav-link href="{{ route('register') }}">
                                 Регистрация
                             </x-custom.navigation.nav-link>
                         @endauth
@@ -225,7 +225,7 @@
                     <x-custom.navigation.nav-link href="{{ route('login') }}" class="block">
                         Войти
                     </x-custom.navigation.nav-link>
-                    <x-custom.navigation.nav-link href="{{ route('register') }}" class="block bg-blue-500">
+                    <x-custom.navigation.nav-link href="{{ route('register') }}" class="block bg-blue-400">
                         Регистрация
                     </x-custom.navigation.nav-link>
                 @endauth

@@ -9,22 +9,33 @@ export default defineConfig({
         }),
     ],
     build: {
-        // Включаем минификацию CSS
+        // Enable CSS minification
         cssMinify: true,
-        // Оптимизируем размер бандла
+        // Optimize bundle size
         rollupOptions: {
             output: {
                 manualChunks: {
-                    vendor: ['alpinejs']
-                }
+                    // Group vendor files
+                    vendor: ['alpinejs'],
+                    // Group map-related files
+                    maps: ['leaflet', 'leaflet-control-geocoder'],
+                },
+                // Asset naming for better caching
+                assetFileNames: (assetInfo) => {
+                    let extType = assetInfo.name.split('.')[1];
+                    if (/png|jpe?g|svg|gif|tiff|bmp|ico/i.test(extType)) {
+                        extType = 'img';
+                    }
+                    return `assets/${extType}/[name]-[hash][extname]`;
+                },
             }
         },
-        // Включаем кэширование
+        // Enable build cache
         cache: true,
-        // Оптимизируем чанки
+        // Optimize chunks
         chunkSizeWarningLimit: 1000,
     },
     optimizeDeps: {
-        include: ['alpinejs']
+        include: ['alpinejs', 'leaflet', 'leaflet-control-geocoder']
     }
 });
