@@ -87,8 +87,13 @@
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                         </svg>
                                     </div>
-                                    <div class="ml-2 flex-1 text-sm text-gray-500">
-                                        {{ $attraction->address }}
+                                    <div class="ml-2 flex-1">
+                                        <p class="text-sm text-gray-700">
+                                            Беларусь, {{ $attraction->city }}
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            {{ $attraction->street }}
+                                        </p>
                                     </div>
                                 </div>
                                 <div class="mt-4">
@@ -97,9 +102,6 @@
                                         <svg class="ml-2 -mr-1 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                         </svg>
-                                    </a>
-                                    <a href="https://www.google.com/maps/dir/?api=1&destination={{ $attraction->latitude }},{{ $attraction->longitude }}" target="_blank" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                                        Построить маршрут
                                     </a>
                                 </div>
                             </div>

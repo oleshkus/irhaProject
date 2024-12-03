@@ -25,4 +25,17 @@ class Attraction extends Model
     {
         return $this->hasMany(Image::class);
     }
+
+    public function getFormattedAddressAttribute(): array
+    {
+        $addressParts = explode(',', $this->address);
+        
+        // Получаем страну из первой части адреса или используем значение по умолчанию
+        $country = trim($addressParts[0] ?? 'Беларусь');
+        
+        return [
+            'location' => $country . ', ' . ($this->city ?: 'Гродно'),
+            'street' => $this->street
+        ];
+    }
 }

@@ -46,6 +46,12 @@
                     @endif
                     <div class="relative h-full flex items-end">
                         <div class="p-8">
+                            <div class="flex justify-between items-center mb-6">
+                                <h1 class="text-3xl font-bold text-white">{{ $route->name }}</h1>
+                                @auth
+                                    <x-like-button :model="$route" type="route" />
+                                @endauth
+                            </div>
                             <div class="flex items-center">
                                 <h1 class="text-4xl font-bold text-white">{{ $route->name }}</h1>
                                 <span class="ml-4 inline-flex items-center px-3 py-1 rounded-full text-sm font-medium {{ $route->difficulty === 'easy' ? 'bg-green-100 text-green-800' : ($route->difficulty === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800') }}">
@@ -74,9 +80,11 @@
                 <!-- Content -->
                 <div class="px-8 py-6">
                     <!-- Description -->
-                    <div class="prose max-w-none">
+                    <div class="mt-8 px-4 sm:px-6">
                         <h2 class="text-2xl font-bold text-gray-900 mb-4">Описание маршрута</h2>
-                        {!! $route->description !!}
+                        <div class="prose prose-lg max-w-none">
+                            {!! $route->description !!}
+                        </div>
                     </div>
 
                     <!-- Attractions -->

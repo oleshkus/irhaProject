@@ -1,6 +1,11 @@
 <!-- resources/views/components/custom/file-upload.blade.php -->
 <div x-data="fileUploadComponent()" class="border-2 border-dashed border-gray-300 p-4 rounded-lg" @dragover.prevent @drop.prevent="handleDrop($event)">
-    <input type="file" name="{{ $attributes->get('name') }}" id="{{ $attributes->get('id') }}" multiple @change="handleFiles($event)" class="hidden" x-ref="fileInput">
+    <input 
+        type="file" 
+        {{ $attributes->merge(['class' => 'hidden']) }}
+        @change="handleFiles($event)" 
+        x-ref="fileInput"
+    >
     <div @click="$refs.fileInput.click()" class="cursor-pointer text-center">
         <p class="text-gray-500">Перетащите файлы сюда или нажмите для выбора</p>
     </div>
@@ -14,7 +19,7 @@
                         </template>
                         <span class="text-gray-700" x-text="file.name"></span>
                     </div>
-                    <button @click="removeFile(file)" class="text-red-500 hover:text-red-700">&times;</button>
+                    <button @click="removeFile(file)" type="button" class="text-red-500 hover:text-red-700">&times;</button>
                 </div>
             </template>
         </div>
@@ -27,32 +32,39 @@
             files: [],
             handleFiles(event) {
                 const files = Array.from(event.target.files);
-                console.log('Files added:', files); // Debug: log files added
-                console.log('Input files:', this.$refs.fileInput.files); // Debug: log input files
                 files.forEach(file => {
                     this.addFile(file);
                 });
             },
             handleDrop(event) {
                 const files = Array.from(event.dataTransfer.files);
-                console.log('Files dropped:', files); // Debug: log files dropped
                 files.forEach(file => {
                     this.addFile(file);
                 });
             },
             addFile(file) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    file.preview = e.target.result;
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        file.preview = e.target.result;
+                        this.files.push(file);
+                    };
+                    reader.readAsDataURL(file);
+                } else {
                     this.files.push(file);
-                    console.log('File added:', file); // Debug: log file added
-                };
-                reader.readAsDataURL(file);
+                }
             },
             removeFile(file) {
-                this.files = this.files.filter(f => f !== file);
-                console.log('File removed:', file); // Debug: log file removed
+                const index = this.files.indexOf(file);
+                if (index > -1) {
+                    this.files.splice(index, 1);
+                }
+                
+                // Clear the file input if all files are removed
+                if (this.files.length === 0) {
+                    this.$refs.fileInput.value = '';
+                }
             }
-        };
+        }
     }
 </script>

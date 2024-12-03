@@ -1,75 +1,108 @@
-<div id="map"></div>
+<div x-data="mapComponent()" x-init="initMap()">
+    <div id="map" class="w-full h-96 rounded-lg shadow-md"></div>
+    <div class="mt-2 text-sm text-gray-500" x-show="error" x-text="error"></div>
+</div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var map = L.map('map').setView([51.505, -0.09], 13);
+    function mapComponent() {
+        return {
+            map: null,
+            marker: null,
+            error: '',
+            geocoder: null,
 
-        var baseMaps = {
-            "CartoDB Positron": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            }),
-            "CartoDB Dark Matter": L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
-            }),
-            "OpenStreetMap Standard": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                maxZoom: 19,
-                attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }),
-        };
+            async initMap() {
+                try {
+                    // Initialize map
+                    this.map = L.map('map').setView([51.505, -0.09], 13);
 
-        var savedMapStyle = localStorage.getItem('mapStyle') || "CartoDB Positron";
-        baseMaps[savedMapStyle].addTo(map);
+                    // Setup tile layers
+                    const baseMaps = {
+                        "CartoDB Positron": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                            maxZoom: 19,
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                        }),
+                        "CartoDB Dark Matter": L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+                            maxZoom: 19,
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                        }),
+                        "OpenStreetMap Standard": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 19,
+                            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                        })
+                    };
 
-        var layerControl = L.control.layers(baseMaps).addTo(map);
-        map.on('baselayerchange', function(e) {
-            localStorage.setItem('mapStyle', e.name);
-        });
+                    // Load saved map style or default
+                    const savedMapStyle = localStorage.getItem('mapStyle') || "CartoDB Positron";
+                    baseMaps[savedMapStyle].addTo(this.map);
 
-        var marker = L.marker([51.505, -0.09]).addTo(map);
+                    // Add layer control
+                    const layerControl = L.control.layers(baseMaps).addTo(this.map);
+                    this.map.on('baselayerchange', (e) => {
+                        localStorage.setItem('mapStyle', e.name);
+                    });
 
-        if (navigator.geolocation) {
-            navigator.geolocation.getCurrentPosition(function(position) {
-                var userLocation = [position.coords.latitude, position.coords.longitude];
-                map.setView(userLocation, 13);
-                marker.setLatLng(userLocation);
-            }, function() {
-                console.error("Geolocation failed or is not supported.");
-            });
-        } else {
-            console.error("Geolocation is not supported by this browser.");
+                    // Initialize marker
+                    this.marker = L.marker([51.505, -0.09]).addTo(this.map);
+
+                    // Try to get user location
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition(
+                            (position) => {
+                                const userLocation = [position.coords.latitude, position.coords.longitude];
+                                this.map.setView(userLocation, 13);
+                                this.marker.setLatLng(userLocation);
+                                this.updateLocationFields(userLocation[0], userLocation[1]);
+                            },
+                            () => {
+                                this.error = "Не удалось получить ваше местоположение.";
+                            }
+                        );
+                    }
+
+                    // Add geocoder control
+                    this.geocoder = L.Control.geocoder({
+                        defaultMarkGeocode: false
+                    }).on('markgeocode', (e) => {
+                        const center = e.geocode.center;
+                        this.map.setView(center, 16);
+                        this.marker.setLatLng(center);
+                        this.updateLocationFields(center.lat, center.lng);
+                    }).addTo(this.map);
+
+                    // Handle map clicks
+                    this.map.on('click', async (e) => {
+                        this.marker.setLatLng(e.latlng);
+                        await this.updateLocationFields(e.latlng.lat, e.latlng.lng);
+                    });
+
+                } catch (error) {
+                    console.error('Error initializing map:', error);
+                    this.error = "Произошла ошибка при инициализации карты.";
+                }
+            },
+
+            async updateLocationFields(lat, lng) {
+                try {
+                    const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`);
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    
+                    const data = await response.json();
+                    
+                    // Update form fields
+                    document.getElementById('latitude').value = lat;
+                    document.getElementById('longitude').value = lng;
+                    document.getElementById('address').value = data.display_name;
+                    document.getElementById('country').value = data.address.country || '';
+                    document.getElementById('city').value = data.address.city || data.address.town || data.address.village || '';
+                    document.getElementById('street').value = data.address.road || '';
+                    
+                    this.error = ''; // Clear any previous errors
+                } catch (error) {
+                    console.error('Error updating location fields:', error);
+                    this.error = "Не удалось получить информацию об адресе.";
+                }
+            }
         }
-
-        map.on('click', function (e) {
-            marker.setLatLng(e.latlng);
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.latlng.lat}&lon=${e.latlng.lng}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('latitude').value = e.latlng.lat;
-                    document.getElementById('longitude').value = e.latlng.lng;
-                    document.getElementById('address').value = data.display_name;
-                    document.getElementById('country').value = data.address.country;
-                    document.getElementById('city').value = data.address.city || data.address.town || data.address.village;
-                    document.getElementById('street').value = data.address.road || '';
-                });
-        });
-
-        var geocoder = L.Control.geocoder({
-            defaultMarkGeocode: false
-        }).on('markgeocode', function(e) {
-            map.setView(e.geocode.center, 16);
-            marker.setLatLng(e.geocode.center);
-            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${e.geocode.center.lat}&lon=${e.geocode.center.lng}`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('latitude').value = e.geocode.center.lat;
-                    document.getElementById('longitude').value = e.geocode.center.lng;
-                    document.getElementById('address').value = data.display_name;
-                    document.getElementById('country').value = data.address.country;
-                    document.getElementById('city').value = data.address.city || data.address.town || data.address.village;
-                    document.getElementById('street').value = data.address.road || '';
-                });
-        }).addTo(map);
-    });
+    }
 </script>

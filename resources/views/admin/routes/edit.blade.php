@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <x-custom.header />
 
     <div class="py-12">
@@ -67,4 +69,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

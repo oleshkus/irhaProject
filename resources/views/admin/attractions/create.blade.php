@@ -1,4 +1,8 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
+    <x-custom.header />
+
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -83,20 +87,12 @@
                         </div>
 
                         <div>
-                            <x-custom.forms.label for="images" class="text-gray-700 font-medium">Изображения</x-custom.forms.label>
-                            <input
-                                type="file"
-                                name="images[]"
-                                id="images"
-                                multiple
-                                class="mt-1 block w-full text-sm text-gray-500
-                                    file:mr-4 file:py-2 file:px-4
-                                    file:rounded-md file:border-0
-                                    file:text-sm file:font-semibold
-                                    file:bg-blue-50 file:text-blue-700
-                                    hover:file:bg-blue-100"
-                            />
-                            @error('images')
+                            <x-custom.forms.label for="images">Изображения</x-custom.forms.label>
+                            <x-custom.forms.file-upload name="images[]" id="images" multiple accept="image/*" />
+                            <p class="mt-1 text-sm text-gray-500">
+                                Поддерживаются форматы: JPG, PNG, GIF. Максимальный размер: 2MB.
+                            </p>
+                            @error('images.*')
                                 <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                             @enderror
                         </div>
@@ -107,8 +103,8 @@
                                 Отмена
                             </a>
                             <button type="submit"
-                                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150">
-                                Создать достопримечательность
+                                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                Создать
                             </button>
                         </div>
                     </form>
@@ -116,34 +112,4 @@
             </div>
         </div>
     </div>
-</x-app-layout>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        var latitudeField = document.getElementById('latitude');
-        var longitudeField = document.getElementById('longitude');
-
-        var latitude = parseFloat(latitudeField.value) || 51.505;
-        var longitude = parseFloat(longitudeField.value) || -0.09;
-
-        var map = L.map('map').setView([latitude, longitude], 13);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        var marker = L.marker([latitude, longitude]).addTo(map);
-
-        map.on('click', function (e) {
-            marker.setLatLng(e.latlng);
-            latitudeField.value = e.latlng.lat;
-            longitudeField.value = e.latlng.lng;
-        });
-
-        document.querySelector('form').addEventListener('submit', function(event) {
-            event.preventDefault();
-            // Add your form submission logic here
-        });
-    });
-</script>
+@endsection

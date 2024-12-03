@@ -1,11 +1,11 @@
-@props(['attractions' => \App\Models\Attraction::latest()->take(6)->get()])
+@props(['attractions' => \App\Models\Attraction::latest()->take(3)->get()])
 
 <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
     @foreach($attractions as $attraction)
         <div class="relative group">
             <div class="relative w-full h-80 bg-white rounded-lg overflow-hidden group-hover:opacity-75 sm:aspect-w-2 sm:aspect-h-1 sm:h-64 lg:aspect-w-1 lg:aspect-h-1">
-                @if($attraction->image)
-                    <img src="{{ asset('storage/' . $attraction->image) }}" 
+                @if($attraction->images->count() > 0)
+                    <img src="{{ Storage::url($attraction->images->first()->path) }}" 
                          alt="{{ $attraction->name }}" 
                          class="w-full h-full object-center object-cover">
                 @else
@@ -23,13 +23,16 @@
                         {{ $attraction->name }}
                     </a>
                 </h3>
-                <p class="text-sm text-gray-500">{{ Str::limit($attraction->description, 100) }}</p>
-                <div class="flex items-center space-x-2">
-                    <svg class="h-5 w-5 text-blue-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <p class="text-sm text-gray-500">{{ strip_tags(Str::limit($attraction->description, 100)) }}</p>
+                <div class="flex items-center text-sm text-gray-500">
+                    <svg class="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                     </svg>
-                    <span class="text-sm text-gray-500">{{ $attraction->address }}</span>
+                    <div class="flex flex-col">
+                        <span>{{ $attraction->formatted_address['location'] }}</span>
+                        <span>{{ $attraction->formatted_address['street'] }}</span>
+                    </div>
                 </div>
             </div>
         </div>

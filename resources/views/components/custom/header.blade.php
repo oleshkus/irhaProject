@@ -101,7 +101,8 @@
                                     role="menu"
                                     aria-orientation="vertical"
                                     aria-labelledby="user-menu">
-                                    <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Профиль</a>
+                                    <a href="{{ route('profile.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Профиль</a>
+                                    <a href="{{ route('profile.edit') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Настройки</a>
                                     <form method="POST" action="{{ route('logout') }}" class="w-full">
                                         @csrf
                                         <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
@@ -149,6 +150,10 @@
                 </x-custom.navigation.nav-link>
 
                 @auth
+                    <x-custom.navigation.nav-link href="{{ route('profile.show', auth()->user()) }}" class="block">
+                        Профиль
+                    </x-custom.navigation.nav-link>
+
                     @if(auth()->user()->isAdmin())
                         <x-custom.navigation.nav-link href="/admin" :active="request()->is('admin*')" class="block">
                             Админ панель
@@ -213,6 +218,7 @@
                             aria-orientation="vertical"
                             aria-labelledby="user-menu">
                             <a href="/profile" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">Профиль</a>
+                            
                             <form method="POST" action="{{ route('logout') }}" class="w-full">
                                 @csrf
                                 <button type="submit" class="w-full text-left block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100" role="menuitem">
@@ -225,7 +231,7 @@
                     <x-custom.navigation.nav-link href="{{ route('login') }}" class="block">
                         Войти
                     </x-custom.navigation.nav-link>
-                    <x-custom.navigation.nav-link href="{{ route('register') }}" class="block bg-blue-400">
+                    <x-custom.navigation.nav-link href="{{ route('register') }}" class="block">
                         Регистрация
                     </x-custom.navigation.nav-link>
                 @endauth

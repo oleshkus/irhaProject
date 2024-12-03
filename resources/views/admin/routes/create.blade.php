@@ -1,4 +1,6 @@
-<x-app-layout>
+@extends('layouts.app')
+
+@section('content')
     <x-custom.header />
 
     <div class="py-12">
@@ -41,13 +43,8 @@
                             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                                 @foreach($attractions as $attraction)
                                     <label class="flex items-start p-4 border rounded-lg hover:bg-gray-50">
-                                        <input type="checkbox" name="attractions[]" value="{{ $attraction->id }}"
-                                               class="mt-1 rounded border-gray-300 text-blue-600 shadow-sm focus:border-blue-300 focus:ring focus:ring-blue-200 focus:ring-opacity-50"
-                                               {{ in_array($attraction->id, old('attractions', [])) ? 'checked' : '' }}>
-                                        <div class="ml-3">
-                                            <div class="font-medium">{{ $attraction->name }}</div>
-                                            <div class="text-sm text-gray-500">{{ Str::limit($attraction->description, 100) }}</div>
-                                        </div>
+                                        <input type="checkbox" name="attractions[]" value="{{ $attraction->id }}" class="form-checkbox h-5 w-5 text-blue-600" {{ in_array($attraction->id, old('attractions', [])) ? 'checked' : '' }}>
+                                        <span class="ml-3 text-sm text-gray-700">{{ $attraction->name }}</span>
                                     </label>
                                 @endforeach
                             </div>
@@ -57,13 +54,18 @@
                         </div>
 
                         <div class="flex justify-end space-x-4">
-                            <x-custom.buttons.button type="submit" class="bg-gradient-to-r from-blue-500 to-blue-600">
-                                Добавить
-                            </x-custom.buttons.button>
+                            <a href="{{ route('admin.routes.index') }}"
+                               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150">
+                                Отмена
+                            </a>
+                            <button type="submit"
+                                    class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 active:bg-blue-900 focus:outline-none focus:border-blue-900 focus:ring ring-blue-300 disabled:opacity-25 transition ease-in-out duration-150">
+                                Создать
+                            </button>
                         </div>
                     </form>
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+@endsection

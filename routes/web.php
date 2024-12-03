@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\AttractionController;
+use App\Http\Controllers\LikeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RouteController;
 use App\Http\Controllers\Admin\AttractionController as AdminAttractionController;
 use App\Http\Controllers\Admin\RouteController as AdminRouteController;
+use App\Http\Controllers\RouteLikeController;
+use App\Http\Controllers\AttractionLikeController;
 use Illuminate\Support\Facades\Route;
 
 // Главная страница
@@ -51,10 +54,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin/routes')->group(function () 
 // -------------------------
 // Профиль пользователя
 // -------------------------
-Route::middleware('auth')->prefix('profile')->group(function () {
-    Route::get('/', [ProfileController::class, 'edit'])->name('profile.edit');
-    Route::patch('/', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/', [ProfileController::class, 'destroy'])->name('profile.destroy');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/profile/{user}', [ProfileController::class, 'show'])->name('profile.show');
+    Route::patch('/profile/info', [ProfileController::class, 'updateInfo'])->name('profile.updateInfo');
+    Route::patch('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.updatePassword');
+    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
 // -------------------------
