@@ -79,7 +79,9 @@
                                                                 onclick="addAttraction({ 
                                                                     id: {{ $attraction->id }}, 
                                                                     name: '{{ $attraction->name }}', 
-                                                                    address: '{{ $attraction->address }}' 
+                                                                    address: '{{ $attraction->address }}', 
+                                                                    latitude: {{ $attraction->latitude }}, 
+                                                                    longitude: {{ $attraction->longitude }} 
                                                                 })" 
                                                                 class="inline-flex items-center px-3 py-1.5 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                                             Добавить
@@ -97,7 +99,10 @@
                                     <h3 class="text-lg font-medium text-gray-900 mb-4">Выбранные достопримечательности</h3>
                                     <div id="selected-attractions" class="space-y-3">
                                         @foreach($route->attractions as $attraction)
-                                            <div class="flex items-center justify-between p-4 bg-white shadow rounded-lg border border-gray-200" data-id="{{ $attraction->id }}">
+                                            <div class="flex items-center justify-between p-4 bg-white shadow rounded-lg border border-gray-200" 
+                                                 data-id="{{ $attraction->id }}"
+                                                 data-lat="{{ $attraction->latitude }}"
+                                                 data-lng="{{ $attraction->longitude }}">
                                                 <div class="flex items-center flex-1">
                                                     <div class="handle cursor-move mr-4">
                                                         <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -121,7 +126,9 @@
                                         @endforeach
                                     </div>
                                 </div>
-                                
+                                <div class="mt-6">
+                                    <x-route-map />
+                                </div>
                                 <div class="pt-5">
                                     <div class="flex justify-end">
                                         <a href="{{ route('admin.routes.index') }}" 
@@ -183,6 +190,8 @@
             const item = document.createElement('div');
             item.className = 'flex items-center justify-between p-4 bg-white shadow rounded-lg border border-gray-200';
             item.dataset.id = attraction.id;
+            item.dataset.lat = attraction.latitude;
+            item.dataset.lng = attraction.longitude;
             
             item.innerHTML = `
                 <div class="flex items-center flex-1">

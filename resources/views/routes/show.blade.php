@@ -29,16 +29,26 @@
             <!-- Content -->
             <div class="p-8">
                 <!-- Description -->
-                <div class="prose prose-lg max-w-none mb-12">
+                <div class="mb-12 prose prose-lg max-w-none">
                     {!! $route->description !!}
                 </div>
-
+                    
+                <!-- Route Gallery -->
+                @if($route->images->count() > 1)
+                    <div class="mb-12">
+                        <x-image-gallery-modal :images="$route->images" :alt="$route->name" />
+                    </div>
+                @endif
+                
                 <!-- Attractions -->
-                <div>
+                <div class="mb-12" id="selected-attractions">
                     <h2 class="text-2xl font-bold text-gray-900 mb-6">Достопримечательности на маршруте</h2>
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                         @foreach($route->getOrderedAttractions() as $index => $attraction)
-                            <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-100">
+                            <div class="bg-white rounded-lg shadow-sm overflow-hidden hover:shadow-md transition-shadow border border-gray-100"
+                                 data-id="{{ $attraction->id }}"
+                                 data-lat="{{ $attraction->latitude }}"
+                                 data-lng="{{ $attraction->longitude }}">
                                 <div class="aspect-w-16 aspect-h-9">
                                     @if($attraction->images->count() > 0)
                                         <img src="{{ Storage::url($attraction->images->first()->path) }}" 
@@ -62,7 +72,14 @@
                                             <p class="mt-1 text-sm text-gray-500">{{ $attraction->address }}</p>
                                         </div>
                                     </div>
-                                    <div class="mt-4 flex justify-end">
+                                    <div class="mt-4 flex justify-between items-center">
+                                        <button onclick="navigateToAttraction({{ $attraction->latitude }}, {{ $attraction->longitude }}, '{{ $attraction->name }}')" 
+                                                class="inline-flex items-center px-3 py-2 border border-blue-600 text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                            <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                            </svg>
+                                            Маршрут
+                                        </button>
                                         <a href="{{ route('attractions.show', $attraction) }}" 
                                            class="inline-flex items-center text-sm font-medium text-blue-600 hover:text-blue-500">
                                             Подробнее
@@ -76,8 +93,56 @@
                         @endforeach
                     </div>
                 </div>
+
+                <!-- Map -->
+                <div class="mb-12">
+                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Карта маршрута</h2>
+                    <div class="rounded-lg overflow-hidden shadow-sm border border-gray-200">
+                        <x-route-map />
+                    </div>
+                </div>
+
+                
             </div>
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+    function navigateToAttraction(lat, lng, name) {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const currentLat = position.coords.latitude;
+                    const currentLng = position.coords.longitude;
+                    const googleMapsUrl = `https://www.google.com/maps/dir/?api=1&origin=${currentLat},${currentLng}&destination=${lat},${lng}&travelmode=driving`;
+                    window.open(googleMapsUrl, '_blank');
+                },
+                (error) => {
+                    console.error('Error getting location:', error);
+                    const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+                    window.open(googleMapsUrl, '_blank');
+                }
+            );
+        } else {
+            const googleMapsUrl = `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`;
+            window.open(googleMapsUrl, '_blank');
+        }
+    }
+
+    // function openImageModal(imageUrl) {
+    //     const modal = document.getElementById('imageModal');
+    //     const modalImage = document.getElementById('modalImage');
+    //     modalImage.src = imageUrl;
+    //     modal.classList.remove('hidden');
+    // }
+
+    // function closeImageModal() {
+    //     const modal = document.getElementById('imageModal');
+    //     modal.classList.add('hidden');
+    // }
+</script>
+@endpush
+
 @endsection

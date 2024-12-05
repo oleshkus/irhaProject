@@ -105,19 +105,33 @@ class RouteController extends Controller
 
         $route->attractions()->sync($attractions);
 
-        // Обработка новых изображений
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $image->store('routes', 'public');
-                $route->images()->create([
-                    'path' => $path,
-                    'name' => $route->name,
-                    'alt' => $route->name
-                ]);
-            }
+        // Удаляем старые изображения
+        foreach ($route->images as $image) {
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
         }
 
-        return redirect()->route('admin.routes.index')->with('success', 'Маршрут успешно обновлен');
+        // Сохраняем новые изображения
+        if ($request->hasFile('images')) {
+            $images = [];
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('routes', 'public');
+                $images[] = ['path' => $path];
+            }
+            $route->images()->createMany($images);
+        }
+
+        // Возвращаем JSON-ответ для AJAX
+        if ($request->ajax()) {
+            return response()->json([
+                'success' => true,
+                'redirect' => route('admin.routes.index'),
+                'message' => 'Маршрут успешно обновлён.'
+            ]);
+        }
+
+        return redirect()->route('admin.routes.index')
+            ->with('success', 'Маршрут успешно обновлён.');
     }
 
     public function deleteImage($imageId)
@@ -140,6 +154,11 @@ class RouteController extends Controller
 
     public function destroy(Route $route)
     {
+        // Удаляем изображения при удалении маршрута
+        foreach ($route->images as $image) {
+            Storage::disk('public')->delete($image->path);
+            $image->delete();
+        }
         $route->attractions()->detach();
         $route->delete();
 
