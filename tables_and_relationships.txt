@@ -1,0 +1,52 @@
+# Tables and Relationships
+
+## User Table
+- **Fields**:
+  - id
+  - name
+  - email
+  - password
+  - avatar
+  - remember_token
+  - email_verified_at
+- **Relationships**:
+  - Has roles (via Spatie\Permission\Traits\HasRoles)
+  - Method `isAdmin()` indicates a role relationship
+
+## Attraction Table
+- **Fields**:
+  - id
+  - name
+  - description
+  - address
+  - country
+  - city
+  - street
+  - latitude
+  - longitude
+- **Relationships**:
+  - Has many Images
+
+## Route Table
+- **Fields**:
+  - id
+  - user_id
+  - other fields related to route
+- **Relationships**:
+  - Belongs to User
+  - Has many Attractions
+  - Has many Images
+
+## Image Table
+- **Fields**:
+  - id
+  - attraction_id
+  - route_id
+  - other fields related to image
+- **Relationships**:
+  - Belongs to Attraction
+  - Belongs to Route
+
+# Notes
+- The fields listed are based on typical Laravel conventions and may need to be adjusted based on your actual database schema.
+- The relationships are inferred from the model methods and may need to be verified with your actual database relationships.
