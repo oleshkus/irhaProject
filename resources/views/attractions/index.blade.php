@@ -1,6 +1,5 @@
-<x-custom.header></x-custom.header>
-
-<x-default-layout>
+@extends('layouts.app')
+@section('content')
     <div class="min-h-screen py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Header -->
@@ -39,13 +38,6 @@
                     <div>
                         <label for="search" class="block text-sm font-medium text-gray-700">Поиск</label>
                         <input type="text" name="search" id="search" value="{{ request('search') }}" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                    </div>
-                    <div>
-                        <label for="category" class="block text-sm font-medium text-gray-700">Категория</label>
-                        <select id="category" name="category" class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            <option value="">Все</option>
-                            <!-- Add category options here -->
-                        </select>
                     </div>
                     <div class="flex items-end">
                         <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
@@ -138,4 +130,4 @@
             @endif
         </div>
     </div>
-</x-default-layout>
+@endsection

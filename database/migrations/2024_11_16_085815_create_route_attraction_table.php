@@ -13,14 +13,13 @@ return new class extends Migration
     {
         Schema::create('route_attraction', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('route_id');
-            $table->unsignedBigInteger('attraction_id');
+            $table->integer('order')->default(0);
+            $table->timestamps();
 
-            $table->foreign('route_id')->references('id')->on('routes')->onDelete('cascade');
-            $table->foreign('attraction_id')->references('id')->on('attractions')->onDelete('cascade');
+            $table->foreignId('route_id')->constrained()->onDelete('cascade');
+            $table->foreignId('attraction_id')->constrained()->onDelete('cascade');
         });
     }
-
     /**
      * Reverse the migrations.
      */

@@ -1,14 +1,17 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-custom.header />
-
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6">
+                    <x-custom.breadcrumbs 
+                        title="Достопримечательности"
+                        :backRoute="route('admin.index')" 
+                        backText="К панели управления"
+                    />
+                    
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-semibold">Достопримечательности</h2>
                         <x-custom.buttons.button href="{{ route('admin.attractions.create') }}" class="bg-gradient-to-r from-blue-500 to-blue-600">
                             Добавить
                         </x-custom.buttons.button>

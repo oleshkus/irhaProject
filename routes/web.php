@@ -8,6 +8,9 @@ use App\Http\Controllers\Admin\AttractionController as AdminAttractionController
 use App\Http\Controllers\Admin\RouteController as AdminRouteController;
 use App\Http\Controllers\RouteLikeController;
 use App\Http\Controllers\AttractionLikeController;
+use App\Http\Controllers\Admin\DashboardController;
+use App\Http\Controllers\Admin\SettingsController;
+use App\Http\Controllers\Admin\UserController;
 use Illuminate\Support\Facades\Route;
 
 // Главная страница
@@ -66,14 +69,20 @@ Route::middleware('auth')->group(function () {
 // -------------------------
 // Административная панель
 // -------------------------
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', function () {
-        return view('dashboard');
-    })->name('dashboard');
-
-    Route::get('/admin', function () {
-        return view('admin.index');
-    })->middleware(['auth', 'admin'])->name('admin');
+Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
+    // Главная страница админки
+    Route::get('/', [DashboardController::class, 'index'])->name('admin.index');
+    
+    // Управление пользователями
+    Route::resource('users', UserController::class)->names('admin.users');
+    
+    // Управление достопримечательностями и маршрутами
+    Route::resource('attractions', AdminAttractionController::class)->names('admin.attractions');
+    Route::resource('routes', AdminRouteController::class)->names('admin.routes');
+    
+    // Удаление изображений
+    Route::delete('routes/images/{image}', [AdminRouteController::class, 'deleteImage'])->name('admin.routes.images.delete');
+    Route::delete('attractions/images/{image}', [AdminAttractionController::class, 'deleteImage'])->name('admin.attractions.images.delete');
 });
 
 // -------------------------

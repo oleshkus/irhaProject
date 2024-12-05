@@ -1,12 +1,12 @@
-<x-custom.header></x-custom.header>
-<x-default-layout>
-    <div class="min-h-screen bg-gray-100">
-        
-        
+@extends('layouts.app')
+
+{{-- <x-custom.header></x-custom.header> --}}
+@section('content')
+    <div class="bg-gray-100">
         <!-- Hero Section -->
         <div class="relative bg-blue-700">
             <div class="absolute inset-0">
-                <img class="w-full h-full object-cover" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2946&q=80" alt="Hero background">
+                <img class="w-full h-full z-5 object-cover" src="https://images.unsplash.com/photo-1507525428034-b723cf961d3e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2946&q=80" alt="Hero background">
                 <div class="absolute inset-0 bg-blue-700 mix-blend-multiply"></div>
             </div>
             
@@ -86,4 +86,7 @@
             </div>
         </div>
     </div>
-</x-default-layout>
+@endsection
+{{-- <x-default-layout>
+    
+</x-default-layout> --}}

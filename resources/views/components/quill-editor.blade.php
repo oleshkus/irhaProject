@@ -2,7 +2,7 @@
     'name' => 'description',
     'value' => '',
     'placeholder' => 'Введите описание...',
-    'height' => '300px'
+    'height' => '100px'
 ])
 
 <div 
@@ -45,6 +45,9 @@
 @once
 @push('styles')
 <style>
+    .ql-editor {
+        height: 100px;
+    }
     .quill-container {
         width: 100%;
     }

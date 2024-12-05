@@ -13,8 +13,10 @@ return new class extends Migration
     {
         Schema::create('routes', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->constrained()->nullOnDelete();
             $table->string('name');
             $table->text('description')->nullable();
+            $table->string('image')->nullable();
             $table->decimal('price', 8, 2)->nullable();
             $table->integer('duration')->nullable(); // Длительность в минутах
             $table->timestamps();

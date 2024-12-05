@@ -5,204 +5,211 @@
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200">
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-2xl font-semibold text-gray-800">
-                            Редактирование достопримечательности
-                        </h2>
-                        <a href="{{ route('admin.attractions.index') }}" 
-                           class="inline-flex items-center px-4 py-2 bg-gray-100 border border-transparent rounded-md font-semibold text-sm text-gray-700 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition ease-in-out duration-150">
-                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
-                            </svg>
-                            Назад к списку
-                        </a>
-                    </div>
-
-                    <form action="{{ route('admin.attractions.update', $attraction) }}" method="POST" enctype="multipart/form-data" class="space-y-6">
-                        @csrf
-                        @method('PUT')
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <!-- Левая колонка -->
+                    <x-custom.breadcrumbs 
+                        title="Редактирование достопримечательности"
+                        :backRoute="route('admin.attractions.index')" 
+                    />
+                    
+                    <div class="bg-white shadow overflow-hidden sm:rounded-lg">
+                        <form action="{{ route('admin.attractions.update', $attraction) }}" 
+                              method="POST" 
+                              enctype="multipart/form-data"
+                              class="p-8">
+                            @csrf
+                            @method('PUT')
+                            
                             <div class="space-y-6">
                                 <!-- Название -->
                                 <div>
-                                    <x-custom.forms.label for="name" class="text-gray-700 font-medium">Название</x-custom.forms.label>
-                                    <x-custom.forms.input 
-                                        type="text" 
-                                        name="name" 
-                                        id="name" 
-                                        :value="old('name', $attraction->name)"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                        placeholder="Введите название достопримечательности"
-                                    />
+                                    <label for="name" class="block text-sm font-medium text-gray-700">Название</label>
+                                    <input type="text" 
+                                           name="name" 
+                                           id="name" 
+                                           required 
+                                           class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                           value="{{ old('name', $attraction->name) }}">
                                     @error('name')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
+                                <hr>
 
-                                <!-- Адрес -->
-                                <div>
-                                    <x-custom.forms.label for="address" class="text-gray-700 font-medium">Адрес</x-custom.forms.label>
-                                    <x-custom.forms.input 
-                                        type="text" 
-                                        name="address" 
-                                        id="address" 
-                                        :value="old('address', $attraction->address)"
-                                        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                        placeholder="Укажите адрес"
-                                    />
-                                    @error('address')
-                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                    @enderror
-                                </div>
-
-                                <!-- Изображения -->
-                                <div>
-                                    <x-custom.forms.label class="text-gray-700 font-medium mb-2">Текущие изображения</x-custom.forms.label>
-                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-4">
-                                        @foreach($attraction->images as $image)
-                                            <div class="relative group" data-image-id="{{ $image->id }}">
-                                                <img src="{{ Storage::url($image->path) }}" 
-                                                     alt="Изображение {{ $loop->iteration }}"
-                                                     class="w-full h-32 object-cover rounded-lg">
-                                                <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-lg flex items-center justify-center">
-                                                    <button type="button" 
-                                                            onclick="deleteImage({{ $image->id }})"
-                                                            class="text-white hover:text-red-500 transition-colors duration-200">
-                                                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
-                                                        </svg>
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        @endforeach
-                                    </div>
-
-                                    <div class="mt-4">
-                                        <x-custom.forms.label for="images" class="text-gray-700 font-medium">Добавить новые изображения</x-custom.forms.label>
-                                        <input type="file" 
-                                               name="images[]" 
-                                               id="images" 
-                                               multiple 
-                                               accept="image/*"
-                                               class="mt-1 block w-full text-sm text-gray-500
-                                                      file:mr-4 file:py-2 file:px-4
-                                                      file:rounded-md file:border-0
-                                                      file:text-sm file:font-semibold
-                                                      file:bg-blue-50 file:text-blue-700
-                                                      hover:file:bg-blue-100">
-                                        @error('images.*')
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Правая колонка -->
-                            <div class="space-y-6">
                                 <!-- Описание -->
                                 <div>
-                                    <x-custom.forms.label for="description" class="text-gray-700 font-medium">Описание</x-custom.forms.label>
-                                    <x-quill-editor 
-                                        name="description" 
-                                        :value="old('description', $attraction->description)" 
-                                        placeholder="Расскажите подробнее о достопримечательности..."
-                                        class="mt-1"
-                                        height="400px"
-                                    />
+                                    <label for="description" class="block text-sm font-medium text-gray-700">Описание</label>
+                                    <x-quill-editor id="description" name="description" :value="old('description', $attraction->description)" />
                                     @error('description')
                                         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
                                     @enderror
                                 </div>
+                                <hr>
 
-                                <!-- Координаты -->
-                                <div class="grid grid-cols-2 gap-4">
-                                    <div>
-                                        <x-custom.forms.label for="latitude" class="text-gray-700 font-medium">Широта</x-custom.forms.label>
-                                        <x-custom.forms.input 
-                                            type="text" 
-                                            name="latitude" 
-                                            id="latitude" 
-                                            :value="old('latitude', $attraction->latitude)"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                            placeholder="Например: 55.7558"
-                                        />
-                                        @error('latitude')
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
+                                <!-- Загрузка изображений -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Изображения</label>
+                                    <x-custom.forms.file-upload name="images[]" multiple accept="image/*" />
+                                    <p class="mt-1 text-sm text-gray-500">
+                                        Поддерживаются форматы: JPG, PNG, GIF. Максимальный размер: 2MB.
+                                    </p>
+                                    @error('images')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                    @error('images.*')
+                                        <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
+                                    @enderror
+                                </div>
+                                <hr>
+
+                                <!-- Координаты и адрес -->
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-4">Расположение на карте</label>
+                                    <div id="map" class="h-96 w-full rounded-lg border border-gray-300 mb-4"></div>
+                                    
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                        <div>
+                                            <label for="latitude" class="block text-sm font-medium text-gray-700">Широта</label>
+                                            <input type="text" 
+                                                   name="latitude" 
+                                                   id="latitude" 
+                                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                   value="{{ old('latitude', $attraction->latitude) }}"
+                                                   readonly>
+                                        </div>
+                                        <div>
+                                            <label for="longitude" class="block text-sm font-medium text-gray-700">Долгота</label>
+                                            <input type="text" 
+                                                   name="longitude" 
+                                                   id="longitude" 
+                                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                   value="{{ old('longitude', $attraction->longitude) }}"
+                                                   readonly>
+                                        </div>
                                     </div>
+
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-4">
+                                        <div>
+                                            <label for="country" class="block text-sm font-medium text-gray-700">Страна</label>
+                                            <input type="text" 
+                                                   name="country" 
+                                                   id="country" 
+                                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                   value="{{ old('country', $attraction->country) }}"
+                                                   readonly>
+                                        </div>
+                                        <div>
+                                            <label for="city" class="block text-sm font-medium text-gray-700">Город</label>
+                                            <input type="text" 
+                                                   name="city" 
+                                                   id="city" 
+                                                   class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                                   value="{{ old('city', $attraction->city) }}"
+                                                   readonly>
+                                        </div>
+                                    </div>
+
                                     <div>
-                                        <x-custom.forms.label for="longitude" class="text-gray-700 font-medium">Долгота</x-custom.forms.label>
-                                        <x-custom.forms.input 
-                                            type="text" 
-                                            name="longitude" 
-                                            id="longitude" 
-                                            :value="old('longitude', $attraction->longitude)"
-                                            class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                                            placeholder="Например: 37.6173"
-                                        />
-                                        @error('longitude')
-                                            <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
-                                        @enderror
+                                        <label for="street" class="block text-sm font-medium text-gray-700">Улица</label>
+                                        <input type="text" 
+                                               name="street" 
+                                               id="street" 
+                                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                               value="{{ old('street', $attraction->street) }}"
+                                               readonly>
+                                    </div>
+
+                                    <div class="mt-4">
+                                        <label for="address" class="block text-sm font-medium text-gray-700">Полный адрес</label>
+                                        <input type="text" 
+                                               name="address" 
+                                               id="address" 
+                                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+                                               value="{{ old('address', $attraction->address) }}"
+                                               readonly>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
 
-                        <!-- Кнопки управления -->
-                        <div class="flex justify-end space-x-4 mt-8">
-                            <button type="button" 
-                                    onclick="window.location.href='{{ route('admin.attractions.index') }}'"
-                                    class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md font-semibold text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150">
-                                Отмена
-                            </button>
-                            <button type="submit"
-                                    class="inline-flex items-center px-4 py-2 border border-transparent rounded-md font-semibold text-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition ease-in-out duration-150">
-                                Сохранить изменения
-                            </button>
-                        </div>
-                    </form>
+                                <!-- Кнопки -->
+                                <div class="flex justify-end space-x-4 pt-4">
+                                    <a href="{{ route('admin.attractions.index') }}" 
+                                       class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        Отмена
+                                    </a>
+                                    <button type="submit" 
+                                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                        Сохранить
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
+    @push('styles')
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+        <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    @endpush
+
     @push('scripts')
-    <script>
-        function deleteImage(imageId) {
-            if (confirm('Вы уверены, что хотите удалить это изображение?')) {
-                fetch(`{{ route('admin.attractions.deleteImage', '') }}/${imageId}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content'),
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Ошибка сети');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        // Находим и удаляем элемент изображения из DOM
-                        const imageElement = document.querySelector(`[data-image-id="${imageId}"]`);
-                        if (imageElement) {
-                            imageElement.remove();
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const map = L.map('map').setView([{{ $attraction->latitude }}, {{ $attraction->longitude }}], 13);
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+
+                let marker = L.marker([{{ $attraction->latitude }}, {{ $attraction->longitude }}], {
+                    draggable: true
+                }).addTo(map);
+
+                const geocoder = L.Control.geocoder({
+                    defaultMarkGeocode: false,
+                    placeholder: 'Поиск адреса...',
+                    geocoder: L.Control.Geocoder.nominatim({
+                        geocodingQueryParams: {
+                            countrycodes: 'by',
+                            'accept-language': 'ru'
                         }
-                    } else {
-                        throw new Error('Ошибка при удалении');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Произошла ошибка при удалении изображения: ' + error.message);
+                    })
+                }).addTo(map);
+
+                function updateFields(latlng) {
+                    document.getElementById('latitude').value = latlng.lat.toFixed(6);
+                    document.getElementById('longitude').value = latlng.lng.toFixed(6);
+
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latlng.lat}&lon=${latlng.lng}&accept-language=ru`)
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.address) {
+                                document.getElementById('country').value = data.address.country || '';
+                                document.getElementById('city').value = data.address.city || data.address.town || '';
+                                document.getElementById('street').value = data.address.road || '';
+                                document.getElementById('address').value = data.display_name || '';
+                            }
+                        });
+                }
+
+                marker.on('dragend', function(e) {
+                    updateFields(marker.getLatLng());
                 });
-            }
-        }
-    </script>
+
+                map.on('click', function(e) {
+                    marker.setLatLng(e.latlng);
+                    updateFields(e.latlng);
+                });
+
+                geocoder.on('markgeocode', function(e) {
+                    const latlng = e.geocode.center;
+                    marker.setLatLng(latlng);
+                    map.setView(latlng, 16);
+                    updateFields(latlng);
+                });
+            });
+        </script>
     @endpush
 @endsection

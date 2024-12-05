@@ -14,9 +14,9 @@
     display: none;
 }
 
-html.loading {
+/* html.loading {
     overflow: hidden;
-}
+} */
 
 html.loading .page-loader {
     display: flex;

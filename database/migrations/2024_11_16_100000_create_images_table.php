@@ -14,7 +14,8 @@ return new class extends Migration
         Schema::create('images', function (Blueprint $table) {
             $table->id();
             $table->string('path');
-            $table->foreignId('attraction_id')->constrained()->onDelete('cascade');
+            $table->foreignId('attraction_id')->nullable()->constrained()->onDelete('cascade');
+            $table->foreignId('route_id')->nullable()->constrained()->onDelete('cascade');
             $table->timestamps();
         });
     }

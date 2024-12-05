@@ -1,7 +1,6 @@
 @extends('layouts.app')
 
 @section('content')
-    <x-custom.header />
     
     @if (session('status') === 'info-updated')
         <x-custom.notification

@@ -1,38 +1,12 @@
-<x-custom.header></x-custom.header>
-
-<x-default-layout>
+@extends('layouts.app')
+@section('content')
     <div class="min-h-screen bg-gray-100 py-8">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Breadcrumbs -->
-            <nav class="flex mb-8" aria-label="Breadcrumb">
-                <ol class="flex items-center space-x-4">
-                    <li>
-                        <div>
-                            <a href="{{ route('home') }}" class="text-gray-400 hover:text-gray-500">
-                                <svg class="flex-shrink-0 h-5 w-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
-                                </svg>
-                            </a>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="flex items-center">
-                            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
-                            </svg>
-                            <a href="{{ route('attractions.index') }}" class="ml-4 text-sm font-medium text-gray-500 hover:text-gray-700">Достопримечательности</a>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="flex items-center">
-                            <svg class="flex-shrink-0 h-5 w-5 text-gray-300" fill="currentColor" viewBox="0 0 20 20">
-                                <path d="M5.555 17.776l8-16 .894.448-8 16-.894-.448z" />
-                            </svg>
-                            <span class="ml-4 text-sm font-medium text-gray-500">{{ $attraction->name }}</span>
-                        </div>
-                    </li>
-                </ol>
-            </nav>
+            <x-custom.nav-breadcrumbs :items="[
+                ['name' => 'Достопримечательности', 'url' => route('attractions.index')],
+                ['name' => $attraction->name]
+            ]" />
             <!-- Main Content -->
             <div class="bg-white shadow overflow-hidden sm:rounded-lg">
                 <!-- Header -->
@@ -98,9 +72,9 @@
                     </div>
 
                     <!-- Map -->
-                    <div class="mt-8">
+                    <div class="mt-8 relative z-0">
                         <h2 class="text-2xl font-bold text-gray-900 mb-4">Расположение</h2>
-                        <div id="attraction-map" style="height: 400px;"></div>
+                        <div id="attraction-map" class="relative" style="height: 400px;"></div>
                         <script>
                             document.addEventListener('DOMContentLoaded', function () {
                                 var map = L.map('attraction-map', {
@@ -131,8 +105,8 @@
                                 </div>
                             </div>
                             <a href="https://www.google.com/maps/dir/?api=1&destination={{ $attraction->latitude }},{{ $attraction->longitude }}" 
-                               target="_blank" 
-                               class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            target="_blank" 
+                            class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
                                 <svg class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
                                 </svg>
@@ -167,4 +141,4 @@
             }
         });
     </script>
-</x-default-layout>
+@endsection
